@@ -1,4 +1,4 @@
-Sub xxx_stock_market()
+Sub stock_market()
 
 
 ' Set variable for ticker symbol
@@ -21,12 +21,14 @@ Cells(1, 12).Value = "Total Stock Volume"
 'percent change = ((close value - open value) / open value)*100
 'set variables for those
 Dim yearly_change As Double
+Dim percent_change As Double
 Dim close_value As Double
 Dim open_value As Double
-Dim percent_change As Double
+
 
 'set open value
 open_value = Cells(2, 3).Value
+
 
 
 
@@ -119,4 +121,3 @@ last_row = Cells(Rows.Count, 1).End(xlUp).Row
 Next i
 
 End Sub
-
