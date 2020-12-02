@@ -6,7 +6,7 @@ Sub stock_market()
 Dim ws As Worksheet
 
 'loop through all stocks for one year
-For Each ws In Worksheets
+For Each ws In ThisWorkbook.Worksheets
 
 
 
