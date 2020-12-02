@@ -29,7 +29,7 @@ Dim close_price As Double
 Dim yearly_change As Double
 Dim percent_change As Double
 Dim open_price As Double
-open_price = Cells(2, 3).Value
+open_price = ws.Cells(2, 3).Value
 
 'create column headings for the summary table
 ws.Cells(1, 9).Value = "Ticker"
