@@ -1,4 +1,4 @@
-Sub begin_stock_market()
+Sub xxx_stock_market()
 
 
 ' Set variable for ticker symbol
@@ -84,12 +84,15 @@ last_row = Cells(Rows.Count, 1).End(xlUp).Row
         Else
         
         'formula to calculate percent change
-        percent_change = (close_value - open_value) / open_value
-
-    End If
+        percent_change = ((close_value - open_value) / open_value) * 100
     
-    'print the percent change in summary table column K
-    Range("K" & summary_table_row).Value = percent_change
+        'rounding down to 2 decimal place
+        percent_change = Application.WorksheetFunction.RoundDown(percent_change, 2)
+    
+        'print the percent change in summary table column K
+        Range("K" & summary_table_row).Value = percent_change
+    
+    End If
 
    
    
@@ -99,8 +102,8 @@ last_row = Cells(Rows.Count, 1).End(xlUp).Row
     'reset total stock volume
     total_stock_volume = 0
     
-    'reset opening price as I set this outside of the loop, unlike closing price
-    open_price = Cells(i + 1, 3)
+    'reset opening value as I set this outside of the loop, unlike closing value
+    open_value = Cells(i + 1, 3)
     
    
 
@@ -114,3 +117,6 @@ last_row = Cells(Rows.Count, 1).End(xlUp).Row
 
 
 Next i
+
+End Sub
+
