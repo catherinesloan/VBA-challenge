@@ -1,0 +1,244 @@
+Sub stock_market()
+
+
+
+'set worksheet
+Dim ws As Worksheet
+
+'loop through all stocks in one worksheet
+For Each ws In ThisWorkbook.Worksheets
+
+'apply worksheet(ws.) to all cells and ranges in code
+
+
+
+
+' Set variable for ticker symbol
+Dim ticker_symbol As String
+  
+'set variable for total stock volume
+Dim total_stock_volume As Double
+total_stock_volume = 0
+
+
+
+
+'insert column headings for the summary table
+ws.Cells(1, 9).Value = "Ticker"
+ws.Cells(1, 10).Value = "Yearly Change"
+ws.Cells(1, 11).Value = "Percent Change"
+ws.Cells(1, 12).Value = "Total Stock Volume"
+
+'yearly change = close value - open value
+'percent change = ((close value - open value) / open value)*100
+'set variables for those
+Dim yearly_change As Double
+Dim percent_change As Double
+Dim close_value As Double
+Dim open_value As Double
+
+
+'set inital open value to equal open value for first ticker in database
+''set outside of the loop as we need the first open value for each particular ticker
+open_value = ws.Cells(2, 3).Value
+
+
+
+
+
+
+
+'keep track of the location for each ticker symbol in the summary table
+Dim summary_table_row As Integer
+summary_table_row = 2
+
+'set a counter for last row of the data
+last_row = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+    'loop through all stock in this worksheet
+ For i = 2 To last_row
+
+    'check if we are still within the same ticker, if it is not the same then...
+    If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+    
+   'set the ticker symbol
+    ticker_symbol = ws.Cells(i, 1).Value
+    
+    'print ticker symbol in summary table
+    ws.Range("I" & summary_table_row).Value = ticker_symbol
+    
+    'add to the total stock volume
+    total_stock_volume = total_stock_volume + ws.Cells(i, 7).Value
+    
+    'print total stock volume in summary table
+    ws.Range("L" & summary_table_row).Value = total_stock_volume
+    
+ 
+ 
+    
+    'set close value within loop as we need final close value of particular ticker
+    close_value = ws.Cells(i, 6).Value
+    
+    'formula to calculate yearly change
+    yearly_change = close_value - open_value
+
+    'print yearly change in summary table column J
+    ws.Range("J" & summary_table_row).Value = yearly_change
+   
+   
+    
+    
+    'problem with percent change formula when the open price value is zero
+    'if the open price is zero then
+    If open_value = 0 Then
+    
+        'set percent change as zeo
+        percent_change = 0
+        
+    'if open price isn't zero then
+    Else
+        
+        'formula to calculate percent change
+        percent_change = ((close_value - open_value) / open_value)
+    
+        'format column K to 2d.p. and %
+        ws.Range("K" & summary_table_row).NumberFormat = "0.00%"
+    
+        'print the percent change in summary table column K
+        ws.Range("K" & summary_table_row).Value = percent_change
+        
+   
+   End If
+   
+   
+   
+   
+   
+   
+   'add 1 to the summary table row
+    summary_table_row = summary_table_row + 1
+    
+    'reset total stock volume
+    total_stock_volume = 0
+    
+    'reset opening value as I set this outside of the loop
+    open_value = ws.Cells(i + 1, 3)
+    
+   
+
+'if the cell immediately following a row has the same ticker...
+Else
+
+  'add to the total volume of stock
+  total_stock_volume = total_stock_volume + ws.Cells(i, 7).Value
+
+
+ End If
+
+Next i
+
+
+
+
+
+
+
+
+'CONDITIONAL FORMATTING
+''highlight positive change in green = 4
+'''highlight negative change in red = 3
+
+'set a counter for last row of the summary table
+last_row_summary_table = ws.Cells(Rows.Count, 9).End(xlUp).Row
+
+'loop through all the data in the summary table
+    For i = 2 To last_row_summary_table
+    
+    'check if yearly change is negative, if it is then ...
+    If ws.Cells(i, 10).Value < 0 Then
+    
+    'assign red colour to these cells
+    ws.Cells(i, 10).Interior.ColorIndex = 3
+    
+    'don't need to define a positive cell, instead just make all other cells green
+ Else
+    ws.Cells(i, 10).Interior.ColorIndex = 4
+    
+  End If
+
+Next i
+  
+  
+  
+  
+  
+  
+  
+'CHALLENGE 1 - return the stock with the "Greatest % increase", "Greatest % decrease" and "Greatest total volume"
+
+'create those table headings
+ws.Cells(2, 15).Value = "Greatest % Increase"
+ws.Cells(3, 15).Value = "Greatest % Decrease"
+ws.Cells(4, 15).Value = "Greatest Total Volume"
+ws.Cells(1, 16).Value = "Ticker"
+ws.Cells(1, 17).Value = "Value"
+
+
+'cell (2,17) is going to be the max value in column K
+'cell(3,17) the min value
+'cell (2,16) and (3,16) need to return the corresponding ticker symbol for the above
+'cell(4,17) will be max value in column L
+'cell (4,16) will return the corresponding ticker symbol
+
+
+'loop through all the data in the summary table
+For i = 2 To last_row_summary_table
+            
+    'find the max percent change in column K
+    If ws.Cells(i, 11).Value = Application.WorksheetFunction.Max(ws.Range("K2:K" & last_row_summary_table)) Then
+    'returning percent change to table, where i is the row of the max ticker
+    ws.Cells(2, 17).Value = ws.Cells(i, 11).Value
+    'change to 2d.p. and % format
+    ws.Cells(2, 17).NumberFormat = "0.00%"
+    'returning ticker symbol to table
+    ws.Cells(2, 16).Value = ws.Cells(i, 9).Value
+    
+    
+    'and find the min percent change in column K, same again but with min function
+    ElseIf ws.Cells(i, 11).Value = Application.WorksheetFunction.Min(ws.Range("K2:K" & last_row_summary_table)) Then
+    ws.Cells(3, 17).Value = ws.Cells(i, 11).Value
+    ws.Cells(3, 17).NumberFormat = "0.00%"
+    ws.Cells(3, 16).Value = ws.Cells(i, 9).Value
+    
+            
+    'find the max total stock volume in column L
+    ElseIf ws.Cells(i, 12).Value = Application.WorksheetFunction.Max(ws.Range("L2:L" & last_row_summary_table)) Then
+    ws.Cells(4, 17).Value = ws.Cells(i, 12).Value
+    ws.Cells(4, 16).Value = ws.Cells(i, 9).Value
+
+  End If
+        
+ Next i
+    
+
+
+
+
+
+
+'CHALLENGE 2 - adjust so the VBA script will run on every worksheet
+''set worksheet at the beginning of the code and loop through all stocks
+
+
+
+'at end of code apply next worksheet
+Next ws
+
+
+
+
+
+
+
+
+End Sub
