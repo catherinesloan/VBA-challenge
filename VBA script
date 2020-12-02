@@ -51,7 +51,7 @@ last_row = ws.Cells(Rows.Count, 1).End(xlUp).Row
    'set the ticker symbol
     ticker_symbol = ws.Cells(i, 1).Value
     
-    'add the total stock volume
+    'add to the total stock volume
     stock_volume = stock_volume + ws.Cells(i, 7).Value
     
     'print ticker symbol in summary table
