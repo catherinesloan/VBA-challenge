@@ -2,10 +2,10 @@
 
 ## The VBA of Wall Street
 
-# Task
+### Task
 Use VBA script to analyse real stock market data. 
 
-# Output
+### Output
 A script that loops through all the stocks for one year and outputs: 
 - The ticker symbol
 - Yearly change from opening price at the beginning of a given year to the closing price at the end of that year
